@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <% include ../partials/header.ejs %>
+
+<script>
+   $(function() {
+
+      var refid = "<%-refid%>";
+
+      $("#volume-complete").click(function(){
+        $.ajax({
+            url : "/work/complete",
+            type: "POST",
+            data: JSON.stringify({id:refid}),
+            contentType: "application/json; charset=utf-8",
+            dataType   : "json",
+            success    : function(){
+              window.location = "/work";
+            }
+        });
+      })
+    });
+
+</script>
+
+</head>
+
+<body>
+
+  <% include ../partials/nav.ejs %>
+
+
+<div class="container">
+  <ul class="list-inline gallery">   
+
+  <% for(var i=0; i < s3.length; i++) { %>
+    <li><a href="<%=s3[i].Key%>"><img class="thumbnail zoom" src="https://s3.amazonaws.com/front-matter-extractor/<%=s3[i].Key%>"></a></li>    
+  <% } %>
+
+
+    
+  </ul>
+
+</div>
+
+
+</body>
+</html>

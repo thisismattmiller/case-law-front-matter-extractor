@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+  <% include ../partials/header.ejs %>
+
+
+  <script>
+    var pageData = <%- JSON.stringify(pageData) %>;
+    var dbData = <%- JSON.stringify(db) %>;
+    var refid = "<%-refid%>";
+    var currentState = [];
+    var currentNames = [];
+
+
+    var buildNamesAdded = function(){
+
+      $('#added-names').empty();
+      if (currentNames.length == 0) return false;
+      $('#added-names').append("<h5 style=\"clear:both\">Names Added:</h5>")
+      for (var x in currentNames){
+
+        var aName = $("<div>");
+        aName.append($("<span>").html(currentNames[x].display+' ('+ currentNames[x].court + ' ' + currentNames[x].type+') '))
+        aName.append($("<a>").attr('href','#').data('display',currentNames[x].display).html('Remove').click(function(e){ e.preventDefault(); removeName($(this).data('display'))}))
+        $('#added-names').append(aName)
+      } 
+
+    }
+
+    var removeName = function(name){
+      var newNames = []
+      for (var x in currentNames){
+        console.log(name, currentNames[x].display)
+        if (currentNames[x].display != name){
+          newNames.push(currentNames[x]);
+        }
+      }
+      currentNames = newNames;
+      buildNamesAdded();
+      $.ajax({
+          url : "/work/submit",
+          type: "POST",
+          data: JSON.stringify({id:refid, data:currentNames}),
+          contentType: "application/json; charset=utf-8",
+          dataType   : "json",
+          success    : function(){
+
+          }
+      });
+
+    }
+
+    var nameClick = function(data){
+      data = data.toLowerCase();
+      data = data.charAt(0).toUpperCase() + data.slice(1);
+      data = data.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+      currentState.push(data);
+
+      if (currentState.length>4){
+        currentState = [];
+        $("#tool-box-names").html("Sorry only up to 4 name parts supported, try again.");
+        return false;
+      }
+
+      // 
+      $("#tool-box-names").empty();
+      var html = ''
+
+      if (currentState.length==1){  
+        html = html + '<input type="text" id="name-0" value="' + currentState[0] + '">';
+        html = html + '<div class="btn-group" id="name-group-0" data-toggle="buttons">';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm active">';
+        html = html + '<input type="radio" name="name_0" id="first" autocomplete="off" checked> First';
+        html = html + '</label>';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm">';
+        html = html + '<input type="radio" name="name_0" id="middle" autocomplete="off" checked> Middle';
+        html = html + '</label>';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm">';
+        html = html + '<input type="radio" name="name_0" id="last" autocomplete="off" checked> Last';
+        html = html + '</label>';
+        html = html + '</div><br/>';
+      }
+      if (currentState.length==2){  
+        html = html + '<input type="text" id="name-0" value="' + currentState[0] + '">';
+        html = html + '<div class="btn-group" id="name-group-0" data-toggle="buttons">';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm active">';
+        html = html + '<input type="radio" name="name_0" id="first" autocomplete="off" checked> First';
+        html = html + '</label>';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm">';
+        html = html + '<input type="radio" name="name_0" id="middle" autocomplete="off" checked> Middle';
+        html = html + '</label>';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm">';
+        html = html + '<input type="radio" name="name_0" id="last" autocomplete="off" checked> Last';
+        html = html + '</label>';
+        html = html + '</div><br/>';
+        html = html + '<input type="text" id="name-1" value="' + currentState[1] + '">';
+        html = html + '<div class="btn-group" id="name-group-1" data-toggle="buttons">';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm">';
+        html = html + '<input type="radio" name="name_1" id="first" autocomplete="off" checked> First';
+        html = html + '</label>';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm">';
+        html = html + '<input type="radio" name="name_1" id="middle" autocomplete="off" checked> Middle';
+        html = html + '</label>';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm active">';
+        html = html + '<input type="radio" name="name_1" id="last" autocomplete="off" checked> Last';
+        html = html + '</label>';
+        html = html + '</div><br/>';
+      }
+
+
+      if (currentState.length==3){  
+        html = html + '<input type="text" id="name-0" value="' + currentState[0] + '">';
+        html = html + '<div class="btn-group" id="name-group-0" data-toggle="buttons">';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm active">';
+        html = html + '<input type="radio" name="name_0" id="first" autocomplete="off" checked> First';
+        html = html + '</label>';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm">';
+        html = html + '<input type="radio" name="name_0" id="middle" autocomplete="off" checked> Middle';
+        html = html + '</label>';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm">';
+        html = html + '<input type="radio" name="name_0" id="last" autocomplete="off" checked> Last';
+        html = html + '</label>';
+        html = html + '</div><br/>';
+        html = html + '<input type="text" id="name-1" value="' + currentState[1] + '">';
+        html = html + '<div class="btn-group" id="name-group-1" data-toggle="buttons">';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm">';
+        html = html + '<input type="radio" name="name_1" id="first" autocomplete="off" checked> First';
+        html = html + '</label>';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm active">';
+        html = html + '<input type="radio" name="name_1" id="middle" autocomplete="off" checked> Middle';
+        html = html + '</label>';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm">';
+        html = html + '<input type="radio" name="name_1" id="last" autocomplete="off" checked> Last';
+        html = html + '</label>';
+        html = html + '</div><br/>';
+        html = html + '<input type="text" id="name-2" value="' + currentState[2] + '">';
+        html = html + '<div class="btn-group" id="name-group-2" data-toggle="buttons">';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm">';
+        html = html + '<input type="radio" name="name_2" id="first" autocomplete="off" checked> First';
+        html = html + '</label>';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm">';
+        html = html + '<input type="radio" name="name_2" id="middle" autocomplete="off" checked> Middle';
+        html = html + '</label>';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm active">';
+        html = html + '<input type="radio" name="name_2" id="last" autocomplete="off" checked> Last';
+        html = html + '</label>';
+        html = html + '</div><br/>';
+      }
+      if (currentState.length==4){  
+        html = html + '<input type="text" id="name-0" value="' + currentState[0] + '">';
+        html = html + '<div class="btn-group" id="name-group-0" data-toggle="buttons">';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm active">';
+        html = html + '<input type="radio" name="name_0" id="first" autocomplete="off" checked> First';
+        html = html + '</label>';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm">';
+        html = html + '<input type="radio" name="name_0" id="middle" autocomplete="off" checked> Middle';
+        html = html + '</label>';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm">';
+        html = html + '<input type="radio" name="name_0" id="last" autocomplete="off" checked> Last';
+        html = html + '</label>';
+        html = html + '</div><br/>';
+        html = html + '<input type="text" id="name-1" value="' + currentState[1] + '">';
+        html = html + '<div class="btn-group" id="name-group-1" data-toggle="buttons">';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm">';
+        html = html + '<input type="radio" name="name_1" id="first" autocomplete="off" checked> First';
+        html = html + '</label>';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm active">';
+        html = html + '<input type="radio" name="name_1" id="middle" autocomplete="off" checked> Middle';
+        html = html + '</label>';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm">';
+        html = html + '<input type="radio" name="name_1" id="last" autocomplete="off" checked> Last';
+        html = html + '</label>';
+        html = html + '</div><br/>';
+        html = html + '<input type="text" id="name-2" value="' + currentState[2] + '">';
+        html = html + '<div class="btn-group" id="name-group-2" data-toggle="buttons">';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm">';
+        html = html + '<input type="radio" name="name_2" id="first" autocomplete="off" checked> First';
+        html = html + '</label>';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm active">';
+        html = html + '<input type="radio" name="name_2" id="middle" autocomplete="off" checked> Middle';
+        html = html + '</label>';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm">';
+        html = html + '<input type="radio" name="name_2" id="last" autocomplete="off" checked> Last';
+        html = html + '</label>';
+        html = html + '</div><br/>';        
+        html = html + '<input type="text" id="name-3" value="' + currentState[3] + '">';
+        html = html + '<div class="btn-group" id="name-group-3" data-toggle="buttons">';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm">';
+        html = html + '<input type="radio" name="name_3" id="first" autocomplete="off" checked> First';
+        html = html + '</label>';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm">';
+        html = html + '<input type="radio" name="name_3" id="middle" autocomplete="off" checked> Middle';
+        html = html + '</label>';
+        html = html + '<label class="btn btn  btn-primary btn-outline btn-sm active">';
+        html = html + '<input type="radio" name="name_3" id="last" autocomplete="off" checked> Last';
+        html = html + '</label>';
+        html = html + '</div><br/>';
+      }
+
+
+      $("#tool-box-names").append(html)
+
+
+    }
+
+
+    var addName = function(){
+
+      var nameType = $("#name-type-buttons").find(".active")[0].children[0].id;
+      var courtType = $("#court-type-buttons").find(".active")[0].children[0].id;
+      var names = [];
+      var display = '';
+
+      if ($('#name-0').length>0){
+        names.push({value:$('#name-0').val().trim(),type: $("#name-group-0").find(".active")[0].children[0].id});
+        display = display + $('#name-0').val().trim() + ' ';
+      }
+      if ($('#name-1').length>0){
+        names.push({value:$('#name-1').val().trim(),type: $("#name-group-1").find(".active")[0].children[0].id});
+        display = display + $('#name-1').val().trim() + ' ';
+      }
+      if ($('#name-2').length>0){
+        names.push({value:$('#name-2').val().trim(),type: $("#name-group-2").find(".active")[0].children[0].id});
+        display = display + $('#name-2').val().trim() + ' ';
+      }   
+      if ($('#name-3').length>0){
+        names.push({value:$('#name-3').val().trim(),type: $("#name-group-3").find(".active")[0].children[0].id});
+        display = display + $('#name-3').val().trim() + ' ';
+      }               
+
+      if (display == '') return false;
+
+      currentNames.push({type:nameType, court: courtType, nameParts:names,display:display.trim()});
+
+      $("#tool-box-names").empty();
+      currentState = [];
+
+      buildNamesAdded();
+
+      $.ajax({
+          url : "/work/submit",
+          type: "POST",
+          data: JSON.stringify({id:refid, data:currentNames}),
+          contentType: "application/json; charset=utf-8",
+          dataType   : "json",
+          success    : function(){
+
+          }
+      });
+
+
+    }
+
+    var positonToolbox = function(){
+      var img = $('#image-box').position();
+      console.log(img)
+      $('#tool-box')
+        .css('top',img.top)
+        .css('left',img.left+$("#image").width())
+
+    }
+
+    var drawRegions = function(){
+
+      var currentH = $("#image").height();
+      var currentW = $("#image").width();
+
+      var shrinkH = parseInt(currentH) / parseInt(pageData.height);
+      var shrinkW = parseInt(currentW) / parseInt(pageData.width);
+
+      console.log(shrinkH,shrinkW)
+
+      $("div.image-region").remove();
+
+      for (var x in pageData.strings){
+        console.log(pageData.strings[x])
+        $("#image-box")
+          .append(
+            $( "<div>" )
+              .addClass('image-region')
+              .css( "left", pageData.strings[x].hpos * shrinkW  )
+              .css( "top", pageData.strings[x].vpos * shrinkH  )
+              .css( "height", pageData.strings[x].height * shrinkH  )
+              .css( "width", pageData.strings[x].width * shrinkW  )
+              .data('content', pageData.strings[x].content)
+              .click(function(){
+                nameClick($(this).data('content'))
+              })
+          )
+      }
+
+
+
+    }
+
+
+    $(function() {
+
+
+      // if the page data coming over is there populate
+      if (dbData && dbData.info && dbData.info.length>0){
+        currentNames = dbData.info;
+        buildNamesAdded();
+      }
+
+
+      $("#image").load(function() {
+        drawRegions();
+
+        positonToolbox();
+        buildNamesAdded();
+      });
+
+      
+      $(window).resize(function(e) {
+        drawRegions();
+        positonToolbox();
+      })
+
+      $("#reset").click(function(){
+        $("#tool-box-names").empty();
+        currentState = [];
+      })
+      $("#addName").click(function(){
+        addName();
+      })
+      $("#volume-complete").click(function(){
+        $.ajax({
+            url : "/work/complete",
+            type: "POST",
+            data: JSON.stringify({id:refid}),
+            contentType: "application/json; charset=utf-8",
+            dataType   : "json",
+            success    : function(){
+              window.location = "/work";
+
+            }
+        });
+
+
+      })
+
+    });
+
+  </script>
+
+
+
+</head>
+
+<body style="height: 100%">
+
+  <% include ../partials/nav.ejs %>
+
+
+<div class="container" style="height: 100%">
+
+  <div id="tool-box">
+
+      
+      
+    <div id="tool-box-names">
+      <h5>👈 Begin clicking a name in the document</h5>
+    </div>
+    <hr/>
+    <div>Court Type:</div>
+    <div id="tool-box-court">
+      <div class="btn-group" id="court-type-buttons"  data-toggle="buttons">
+        <label class="btn btn  btn-primary btn-outline btn-sm active">
+          <input type="radio" name="court-type" id="supreme" autocomplete="off" checked> Supreme
+        </label>
+        <label class="btn btn btn-primary btn-outline btn-sm">
+          <input type="radio" name="court-type" id="appellate" autocomplete="off"> Appellate
+        </label>        
+        <label class="btn btn btn-primary btn-outline btn-sm">
+          <input type="radio" name="court-type" id="claims" autocomplete="off"> Claims
+        </label>  
+        <label class="btn btn btn-primary btn-outline btn-sm">
+          <input type="radio" name="court-type" id="circuit" autocomplete="off"> Circuit
+        </label>        
+      </div>
+    </div>
+    <div>Name Type:</div>
+    <div id="tool-box-roles">
+      <div class="btn-group" id="name-type-buttons" data-toggle="buttons">
+          <label class="btn name-type-button btn-primary btn-outline btn-sm active">
+            <input type="radio" name="name-type" id="judge" autocomplete="off" checked> Judge
+          </label>
+          <label class="btn name-type-button btn-primary btn-outline btn-sm">
+            <input type="radio" name="name-type" id="chief" autocomplete="off" checked> Chief Judge
+          </label>        
+          <label class="btn name-type-button btn-primary btn-outline btn-sm">
+            <input type="radio" name="name-type" id="commissioner" autocomplete="off" checked> Commissioner
+          </label>  
+          <label class="btn name-type-button btn-primary btn-outline btn-sm">
+            <input type="radio" name="name-type" id="reporter" autocomplete="off" checked> Reporter
+          </label>
+          <label class="btn name-type-button btn-primary btn-outline btn-sm">
+            <input type="radio" name="name-type" id="clerk" autocomplete="off" checked> Clerk
+          </label>  
+          <label class="btn name-type-button btn-primary btn-outline btn-sm">
+            <input type="radio" name="name-type" id="attorneygeneral" autocomplete="off" checked> Attorney General
+          </label>
+      </div>
+    </div>
+    <div class="pull-right" style="padding: 10px;">
+      <button type="button" id="reset" class="btn btn-secondary">Reset</button>
+      <button type="button" id="addName" class="btn btn-success">Add Name</button>
+    </div>
+    <div id="added-names" style="padding: 10px;">
+
+    </div>
+
+  </div>
+
+  <div id="image-box" style="height: 100%">
+    <img id="image" src="<%=image%>" style="height: 100%; width: auto;" />
+  </div>
+
+
+
+</div>
+
+
+</body>
+</html>

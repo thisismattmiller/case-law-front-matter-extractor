@@ -11,8 +11,17 @@
     "test": "node test.js"
   },
   "dependencies": {
+    "aws-sdk": "^2.93.0",
+    "body-parser": "^1.17.2",
     "ejs": "2.5.6",
-    "express": "4.15.2"
+    "express": "4.15.2",
+    "glob": "^7.1.2",
+    "highland": "^2.11.1",
+    "pg": "7.0.2",
+    "request": "^2.81.0",
+    "sharp": "^0.18.2",
+    "xmldom": "^0.1.27",
+    "xpath": "0.0.24"
   },
   "devDependencies": {
     "request": "^2.81.0",
